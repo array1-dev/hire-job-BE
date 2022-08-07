@@ -4,8 +4,7 @@ const Experiences = require('../models/experience');
 module.exports = {
     getByIdUser: async (req, res) => {
         try {
-            const userId = req.params.userId;
-            console.log(userId)
+            const userId = req.decodeToken.userId;
             const result = await Experiences.getByIdUser(userId);
             if (!result.length) {
                 return res.status(404).json({
@@ -33,29 +32,46 @@ module.exports = {
     },
     addExperience: async (req, res) => {
         try {
-            let setData = {
-                ...req.body
+            const userId = req.decodeToken.userId;
+            let { experienceName, experiencePlace, experienceIn, experienceOut, experienceDescription } = req.body
+            if (!experienceName || !experiencePlace || !experienceIn || !experienceOut || !experienceDescription) {
+                return res.status(404).json({ success: false, message: `Error: Data cannot be empty. Please fill in.` })
             }
-            const result = await Experiences.add(setData);
-            return res.status(200).json({ success: true, message: 'Success', data: result });
+            let setData = {
+                ...req.body,
+                userId
+            }
+            const result = await Experiences.addExperience(setData);
+            return res.status(200).json({ success: true, message: 'Your experience data has been added.', data: result });
         } catch (error) {
             return res.status(500).json({ success: false, message: `Error: ${error.code}` });
         }
     },
     updateExperience: async (req, res) => {
         try {
-            const experienceId = req.params.experienceId;
-            const checkData = await Experiences.getProductById(experienceId);
+            const {experienceId} = req.params;
+            const userId = req.decodeToken.userId
+            const checkData = await Experiences.getExperienceById(experienceId);
+            if(req.body.userId){
+                return res.status(500).json({
+                    success: false, message: `Error: Cannot transfer data. Keep it to yourself!`, data: []
+                })
+            }
             if (!checkData.length) {
                 return res.status(404).json({
                     success: false, message: `Error: Data by ${experienceId} not found!`, data: []
                 })
             }
+            if(checkData[0].userId !== userId){
+                return res.status(500).json({
+                    success: false, message: `Error: Cant edit!`, data: []
+                })
+            }
             let setData = {
                 ...req.body
             }
-            const result = await Experiences.update(experienceId, setData);
-            return res.status(200).json({ success: true, message: 'Success update!', data: result });
+            const result = await Experiences.updateExperience(experienceId, setData);
+            return res.status(200).json({ success: true, message: 'Update data success!', data: result });
         } catch (error) {
             return res.status(500).json({ success: false, message: `Error: ${error.code}` });
         }
@@ -63,13 +79,18 @@ module.exports = {
     removeExperience: async (req, res) => {
         try {
             const experienceId = req.params.experienceId;
-            const checkData = await Experiences.getUserById(experienceId);
+            const checkData = await Experiences.getExperienceById(experienceId);
+            if (checkData[0].userId !== req.decodeToken.userId) {
+                return res.status(500).json({
+                    success: false, message: `Error: Sorry, access is not allowed!`, data: []
+                })
+            }
             if (!checkData.length) {
                 return res.status(404).json({
                     success: false, message: `Error: Data by ${experienceId} not found!`, data: []
                 })
             }
-            const results = await Users.remove(experienceId);
+            const results = await Experiences.removeExperience(experienceId);
             return res.status(200).json({ success: true, message: 'Success delete!', data: results });
         } catch (err) {
             return res.status(500).json({ success: false, message: `Error: ${err.code}` });
