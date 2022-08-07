@@ -19,6 +19,7 @@ module.exports = {
     register: async (req, res) => {
         try {
             let { userFullName, email, password, confrimPassword, userPhone } = req.body
+            console.log(req.body)
             code = randomString(20)
             email = email.toLowerCase()
             const userSlug = Slugify(`${userFullName} ${randomString(2)}`, { lower: true })
