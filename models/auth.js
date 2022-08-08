@@ -11,6 +11,17 @@ module.exports = {
             })
         })
     },
+    addToCompany: (data) => {
+        return new Promise((resolve, reject) => {
+            db.query(`INSERT INTO companies SET ?`, data, (error, results) => {
+                if (error) {
+                    reject(error)
+                }
+                resolve(results)
+            })
+        })
+    }
+    ,
     login: (email) => {
         return new Promise((resolve, reject) => {
             db.query(`SELECT userId, email, password, userImage, role FROM users WHERE email='${email}'`, (error, result) => {
@@ -23,7 +34,7 @@ module.exports = {
     },
     getUserByEmail: (email) => {
         return new Promise((resolve, reject) => {
-            db.query(`SELECT email,code FROM users WHERE email='${email}'`, (error, result) => {
+            db.query(`SELECT userId,email,code FROM users WHERE email='${email}'`, (error, result) => {
                 if (error) {
                     reject(error)
                 }

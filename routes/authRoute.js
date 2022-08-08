@@ -8,7 +8,7 @@ router.post('/verify', verify)
 router.post('/login', login)
 router.patch('/change-pass', changePassword)
 router.post('/verify-token', verifyToken)
-router.get('/verify-code', verifyCode)
+router.post('/verify-code', verifyCode)
 
 
 module.exports = router
