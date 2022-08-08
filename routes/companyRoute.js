@@ -1,12 +1,13 @@
 const express = require("express")
 const router = express.Router()
-const { getUserId, getCompanyId, addCompany, updateCompany, removeCompany } = require("../controllers/companyController")
+const { getUserId, getCompanyId, addCompany, updateCompany, removeCompany, getCompanyBySlug } = require("../controllers/companyController")
 const { isPekerja, isPerekrut, isLogin } = require('../helpers/auth')
 
 router.get('/', isLogin, getUserId)
-router.get('/:companyId', isPerekrut, getCompanyId)
+router.get('/id/:companyId', isPerekrut, getCompanyId)
+router.get('/:companySlug', getCompanyBySlug)
 router.post('/', isPerekrut, addCompany)
-router.patch('/:companyId', isPerekrut, updateCompany)
+router.patch('/:companyId', isLogin, isPerekrut, updateCompany)
 router.delete('/:companyId', isPerekrut, removeCompany)
 
 

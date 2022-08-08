@@ -1,9 +1,24 @@
 const db = require('../helpers/db')
 
+
 module.exports = {
-    getByIdUser: (userId) => {
+    getPortfolioByUserId: (userId) => {
         return new Promise((resolve, reject) => {
-            db.query(`SELECT * FROM skills WHERE userId='${userId}'`, (error, result) => {
+            db.query(`SELECT * FROM portfolio WHERE userId='${userId}'`, (error, result) => {
+                if (error) {
+                    reject({
+                        success: false,
+                        message: error.sqlMessage,
+                    })
+                }
+                resolve(result)
+
+            })
+        })
+    },//done
+     getPortfolioById: (portfolioId) => {
+        return new Promise((resolve, reject) => {
+            db.query(`SELECT * FROM portfolio WHERE portfolioId='${portfolioId}'`, (error, result) => {
                 if (error) {
                     reject({
                         success: false,
@@ -13,38 +28,10 @@ module.exports = {
                 resolve(result)
             })
         })
-    },
-    getSkillById: (skill_id) => {
+    },//done
+    addPortfolio: async (setData) => {
         return new Promise((resolve, reject) => {
-            db.query(`SELECT * FROM skills WHERE skill_id='${skill_id}'`, (error, result) => {
-                if (error) {
-                    reject({
-                        success: false,
-                        message: error.sqlMessage,
-                    })
-                }
-                resolve(result)
-            })
-        })
-    },
-    
-    addSkill: (req, res) => {
-        return new Promise((resolve, reject) => {
-            db.query(`INSERT INTO skills SET ?`, req, (err, results) => {
-              if (err) {
-                reject({ message: "ada error" })
-              }
-              resolve({
-                message: "add skill success",
-                status: 200,
-                data: results
-              })
-            })
-        })
-    },
-    updateSkill: async (skill_id, data) => {
-        return new Promise((resolve, reject) => {
-            db.query(`UPDATE skills SET ? WHERE skill_id = ?`, [data, skill_id], (err, results) => {
+            db.query(`INSERT INTO portfolio SET ?`, setData, (err) => {
                 if (err) {
                     reject({
                         success: false, message: err.sqlMessage, data: {
@@ -53,18 +40,34 @@ module.exports = {
                     })
                 }
                 resolve({
-                    skill_id,
-                    ...data,
+                    ...setData
+                  })
+            })
+        })
+    },//done 
+    updatePortfolio: async (setData, portfolioId) => {
+        return new Promise((resolve, reject) => {
+            db.query(`UPDATE portfolio SET ? WHERE portfolioId = ?`, [setData, portfolioId], (err) => {
+                if (err) {
+                    reject({
+                        success: false, message: err.sqlMessage, setData: {
+                            errCode: err.code, errNo: err.errno
+                        }
+                    })
+                }
+                resolve({
+                    portfolioId,
+                    ...setData,
                 })
             })
         })
-    },
-    removeSkill: async (skill_id) => {
+    },//done 
+    deletePortfolio: async (portfolioId) => {
         return new Promise((resolve, reject) => {
-            db.query(`DELETE FROM skills WHERE skill_id = ?`, skill_id, (err, results) => {
+            db.query(`DELETE FROM portfolio WHERE portfolioId = ?`, portfolioId, (err, results) => {
                 if (err) {
                     reject({
-                        success:false, message: err.sqlMessage, data: {
+                        success: false, message: err.sqlMessage, data: {
                             errCode: err.code, errNo: err.errno
                         }
                     })
@@ -72,5 +75,5 @@ module.exports = {
                 resolve(results)
             })
         })
-    }
+    }//done 
 }

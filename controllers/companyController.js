@@ -43,11 +43,11 @@ module.exports = {
     },
     getCompanyBySlug: async (req, res) => {
         try {
-            const { slug } = req.params;
-            const result = await Companies.getCompanyBySlug(slug);
+            const { companySlug } = req.params;
+            const result = await Companies.getCompanybySlug(companySlug);
             if (!result.length) {
                 return res.status(404).json({
-                    success: false, message: `Error: Data by ${slug} not found!`, data: []
+                    success: false, message: `Error: Data by ${companySlug} not found!`, data: []
                 })
             }
             return res.status(200).json({ success: true, message: 'Success', data: result[0] });

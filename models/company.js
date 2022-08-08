@@ -27,6 +27,19 @@ module.exports = {
             })
         })
     },
+    getCompanybySlug: (companySlug) => {
+        return new Promise((resolve, reject) => {
+            db.query(`SELECT users.userImage, companies.companyName, companies.companyField, companies.companyAddress, companies.companyDescription, companies.companyEmail, companies.companyInstagram, companies.companyPhone, companies.companyPhone, companies.companyLinkedin FROM users JOIN companies ON users.userId = companies.userId where companySlug='${companySlug}'`, (error, result) => {
+                if (error) {
+                    reject({
+                        success: false,
+                        message: error.sqlMessage,
+                    })
+                }
+                resolve(result)
+            })
+        })
+    },
     addCompany: (req, res) => {
         return new Promise((resolve, reject) => {
             db.query(`INSERT INTO companies SET ?`, req, (err, results) => {
