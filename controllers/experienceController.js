@@ -1,10 +1,11 @@
-const Skill = require ('../models/skill');
+const Experiences = require('../models/experience');
+// const Slug = require('slugify');
 
 module.exports = {
     getByIdUser: async (req, res) => {
         try {
             const userId = req.decodeToken.userId;
-            const result = await Skill.getByIdUser(userId);
+            const result = await Experiences.getByIdUser(userId);
             if (!result.length) {
                 return res.status(404).json({
                     success: false, message: `Error: Data by ${userId} not found!`, data: []
@@ -15,13 +16,13 @@ module.exports = {
             return res.status(500).json({ success: false, message: `Error: ${error.code}` });
         }
     },
-    getSkillById: async (req, res) => {
+    getExperienceById: async (req, res) => {
         try {
-            const skill_id = req.params.skill_id;
-            const result = await Skill.getSkillById(skill_id);
+            const experienceId = req.params.experienceId;
+            const result = await Experiences.getExperienceById(experienceId);
             if (!result.length) {
                 return res.status(404).json({
-                    success: false, message: `Error: Data by ${skill_id} not found!`, data: []
+                    success: false, message: `Error: Data by ${experienceId} not found!`, data: []
                 })
             }
             return res.status(200).json({ success: true, message: 'Success', data: result[0] });
@@ -29,28 +30,28 @@ module.exports = {
             return res.status(500).json({ success: false, message: `Error: ${error.code}` });
         }
     },
-    addSkill: async (req, res) => {
+    addExperience: async (req, res) => {
         try {
             const userId = req.decodeToken.userId;
-            let {skillName} = req.body
-            if (!skillName) {
+            let { experienceName, experiencePlace, experienceIn, experienceOut, experienceDescription } = req.body
+            if (!experienceName || !experiencePlace || !experienceIn || !experienceOut || !experienceDescription) {
                 return res.status(404).json({ success: false, message: `Error: Data cannot be empty. Please fill in.` })
             }
             let setData = {
                 ...req.body,
                 userId
             }
-            const result = await Skill.addSkill(setData);
-            return res.status(200).json({ success: true, message: 'Your Skill data has been added.', data: result });
+            const result = await Experiences.addExperience(setData);
+            return res.status(200).json({ success: true, message: 'Your experience data has been added.', data: result });
         } catch (error) {
             return res.status(500).json({ success: false, message: `Error: ${error.code}` });
         }
     },
-    updateSkill: async (req, res) => {
+    updateExperience: async (req, res) => {
         try {
-            const {skill_id} = req.params;
+            const {experienceId} = req.params;
             const userId = req.decodeToken.userId
-            const checkData = await Skill.getSkillById(skill_id);
+            const checkData = await Experiences.getExperienceById(experienceId);
             if(req.body.userId){
                 return res.status(500).json({
                     success: false, message: `Error: Cannot transfer data. Keep it to yourself!`, data: []
@@ -58,7 +59,7 @@ module.exports = {
             }
             if (!checkData.length) {
                 return res.status(404).json({
-                    success: false, message: `Error: Data by ${skill_id} not found!`, data: []
+                    success: false, message: `Error: Data by ${experienceId} not found!`, data: []
                 })
             }
             if(checkData[0].userId !== userId){
@@ -69,17 +70,16 @@ module.exports = {
             let setData = {
                 ...req.body
             }
-            const result = await Skill.updateSkill(skill_id, setData);
+            const result = await Experiences.updateExperience(experienceId, setData);
             return res.status(200).json({ success: true, message: 'Update data success!', data: result });
         } catch (error) {
-            // console.log (error)
             return res.status(500).json({ success: false, message: `Error: ${error.code}` });
         }
     },
-    removeSkill: async (req, res) => {
+    removeExperience: async (req, res) => {
         try {
-            const skill_id = req.params.skill_id;
-            const checkData = await Skill.getSkillById(skill_id);
+            const experienceId = req.params.experienceId;
+            const checkData = await Experiences.getExperienceById(experienceId);
             if (checkData[0].userId !== req.decodeToken.userId) {
                 return res.status(500).json({
                     success: false, message: `Error: Sorry, access is not allowed!`, data: []
@@ -87,10 +87,10 @@ module.exports = {
             }
             if (!checkData.length) {
                 return res.status(404).json({
-                    success: false, message: `Error: Data by ${skill_id} not found!`, data: []
+                    success: false, message: `Error: Data by ${experienceId} not found!`, data: []
                 })
             }
-            const results = await Skill.removeSkill(skill_id);
+            const results = await Experiences.removeExperience(experienceId);
             return res.status(200).json({ success: true, message: 'Success delete!', data: results });
         } catch (err) {
             return res.status(500).json({ success: false, message: `Error: ${err.code}` });

@@ -18,20 +18,18 @@ randomString = (length) => {
 module.exports = {
     register: async (req, res) => {
         try {
-            let { userFullName, email, password, confrimPassword, userPhone } = req.body
-            console.log(req.body)
+            const { type } = req.body
             code = randomString(20)
+            let { userFullName, email, password, confrimPassword, userPhone } = req.body
             email = email.toLowerCase()
-            const userSlug = Slugify(`${userFullName} ${randomString(2)}`, { lower: true })
-            const role = 'pekerja'
-            if (!email || !password || !userPhone || !userFullName || !confrimPassword) {
-                return res.status(404).json({ success: false, message: "Error: Fields must be filled" })
-            }
             if (password.length < 8) {
                 return res.status(404).json({ success: false, message: "Error: Password must be more than 8 characters" })
             }
             if (password !== confrimPassword) {
                 return res.status(400).json({ success: false, message: 'Error: New Password and Confrim Password must be same' })
+            }
+            if (!email || !password || !userPhone || !userFullName || !confrimPassword) {
+                return res.status(404).json({ success: false, message: "Error: Fields must be filled" })
             }
             const checkEmail = await Auth.getUserByEmail(email)
             if (checkEmail.length != 0) {
@@ -39,29 +37,66 @@ module.exports = {
             }
             const hash = CryptoJS.AES.encrypt(password, process.env.SECRET_KEY_CRYPT).toString()
             password = hash
-            let setData = {
-                userFullName,
-                userSlug,
-                email,
-                password,
-                userPhone,
-                code,
-                role,
+            if (type === 'pekerja') {
+                const userSlug = Slugify(`${userFullName} ${randomString(2)}`, { lower: true })
+                const role = 'pekerja'
+                let setData = {
+                    userFullName,
+                    userSlug,
+                    email,
+                    password,
+                    userPhone,
+                    code,
+                    role,
+                }
+                const sendemail = await sendEmail.SendEmail(email, code)
+                if (sendemail) {
+                    const result = await Auth.register(setData)
+                    return res.status(201).json({ success: true, message: 'Successfully Register, Check your email to verify your account!', data: result })
+                }
+                else {
+                    return res.status(500).json({ success: false, message: 'Error!, email not sent', data: [] })
+                }
             }
-            const sendemail = await sendEmail.SendEmail(email, code)
-            if (sendemail) {
-                const result = await Auth.register(setData)
-                return res.status(201).json({ success: true, message: 'Successfully Register, Check your email to verify your account!', data: result })
-            }
-            else {
-                return res.status(500).json({ success: false, message: 'Error!, email not sent', data: [] })
+            if (type === 'perekrut') {
+                let { companyName, companyField } = req.body
+                const role = 'perekrut'
+                let setData = {
+                    userFullName,
+                    email,
+                    password,
+                    userPhone,
+                    code,
+                    role,
+                }
+                const sendemail = await sendEmail.SendEmail(email, code)
+                if (sendemail) {
+                    const result = await Auth.register(setData)
+                    const checkId = await Auth.getUserByEmail(email)
+                    let setDataCompany = {
+                        userId: checkId[0].userId,
+                        companyPhone: userPhone,
+                        companyName,
+                        companyField,
+                    }
+                    if (!checkId.length) {
+                        return res.status(500).json({ success: false, message: 'Error!, register failed', data: [] })
+                    }
+                    await Auth.addToCompany(setDataCompany)
+                    return res.status(201).json({ success: true, message: 'Successfully Register, Check your email to verify your account!', data: result })
+                }
+                else {
+                    return res.status(500).json({ success: false, message: 'Error!, email not sent', data: [] })
+                }
+
             }
 
         } catch (error) {
+            console.log(error);
             if (error.code == 'ER_DUP_ENTRY') {
                 return res.status(400).json({ success: false, message: 'Error: Email already registered' })
             }
-            return res.status(500).json({ success: false, message: `Error: ${error.code}` })
+            return res.status(500).json({ success: false, message: `Error: Something went wrong!` })
         }
 
     },
@@ -93,7 +128,7 @@ module.exports = {
                 }
             })
         } catch (error) {
-            return res.status(500).json({ success: false, message: `Error: ${error.code}`, data: [] })
+            return res.status(500).json({ success: false, message: `Error: Something went wrong!`, data: [] })
         }
     },
     verify: async (req, res) => {
@@ -110,7 +145,7 @@ module.exports = {
             await Auth.verify(email)
             return res.status(200).json({ success: true, message: 'Successfully verified!' })
         } catch (error) {
-            return res.status(500).json({ success: false, message: `Error: ${error.code}` })
+            return res.status(500).json({ success: false, message: `Error: Something went wrong!` })
         }
     },
     forgotPass: async (req, res) => {
@@ -129,7 +164,7 @@ module.exports = {
             }
             return res.status(200).json({ data: result })
         } catch (error) {
-            return res.status(500).json({ success: false, message: `Error: ${error.code}` })
+            return res.status(500).json({ success: false, message: `Error: Something went wrong!` })
         }
     },
     changePassword: async (req, res) => {
@@ -156,12 +191,12 @@ module.exports = {
             await Auth.verify(email)
             return res.status(200).json({ success: true, message: 'Successfully change password!' })
         } catch (error) {
-            return res.status(500).json({ success: false, message: `Error: ${error.code}` })
+            return res.status(500).json({ success: false, message: `Error: Something went wrong!` })
         }
     },
     verifyCode: async (req, res) => {
         try {
-            const { email, code } = req.query
+            const { email, code } = req.body
             const checkEmail = await Auth.getUserByEmail(email)
             if (checkEmail.length < 1) {
                 return res.status(404).json({ success: false, message: 'Email not found' })

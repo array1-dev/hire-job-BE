@@ -3,7 +3,7 @@ const db = require('../helpers/db')
 module.exports = {
     getByIdUser: (userId) => {
         return new Promise((resolve, reject) => {
-            db.query(`SELECT * FROM skills WHERE userId='${userId}'`, (error, result) => {
+            db.query(`SELECT * FROM experiences WHERE userId='${userId}'`, (error, result) => {
                 if (error) {
                     reject({
                         success: false,
@@ -14,9 +14,9 @@ module.exports = {
             })
         })
     },
-    getSkillById: (skill_id) => {
+    getExperienceById: (experienceId) => {
         return new Promise((resolve, reject) => {
-            db.query(`SELECT * FROM skills WHERE skill_id='${skill_id}'`, (error, result) => {
+            db.query(`SELECT * FROM experiences WHERE experienceId='${experienceId}'`, (error, result) => {
                 if (error) {
                     reject({
                         success: false,
@@ -28,23 +28,34 @@ module.exports = {
         })
     },
     
-    addSkill: (req, res) => {
+    // getExperience: (experienceId) => {
+    //     db.query(`SELECT experienceName, experiencePlace, experienceIn, experienceOut, experienceDescription, created_at, updated_at FROM experiences WHERE experienceId='${experienceId}'`, (error, result) => {
+    //         if (error) {
+    //             reject({
+    //                 success: false,
+    //                 message: error.sqlMessage,
+    //             })
+    //         }
+    //         resolve(result)
+    //     })
+    // },
+    addExperience: (req, res) => {
         return new Promise((resolve, reject) => {
-            db.query(`INSERT INTO skills SET ?`, req, (err, results) => {
+            db.query(`INSERT INTO experiences SET ?`, req, (err, results) => {
               if (err) {
                 reject({ message: "ada error" })
               }
               resolve({
-                message: "add skill success",
+                message: "add experiences success",
                 status: 200,
                 data: results
               })
             })
         })
     },
-    updateSkill: async (skill_id, data) => {
+    updateExperience: async (experienceId, data) => {
         return new Promise((resolve, reject) => {
-            db.query(`UPDATE skills SET ? WHERE skill_id = ?`, [data, skill_id], (err, results) => {
+            db.query(`UPDATE experiences SET ? WHERE experienceId = ?`, [data, experienceId], (err, results) => {
                 if (err) {
                     reject({
                         success: false, message: err.sqlMessage, data: {
@@ -53,15 +64,15 @@ module.exports = {
                     })
                 }
                 resolve({
-                    skill_id,
+                    experienceId,
                     ...data,
                 })
             })
         })
     },
-    removeSkill: async (skill_id) => {
+    removeExperience: async (experienceId) => {
         return new Promise((resolve, reject) => {
-            db.query(`DELETE FROM skills WHERE skill_id = ?`, skill_id, (err, results) => {
+            db.query(`DELETE FROM experiences WHERE experienceId = ?`, experienceId, (err, results) => {
                 if (err) {
                     reject({
                         success:false, message: err.sqlMessage, data: {
