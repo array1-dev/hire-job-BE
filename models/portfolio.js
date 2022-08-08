@@ -1,6 +1,5 @@
 const db = require('../helpers/db')
 
-
 module.exports = {
     getPortfolioByUserId: (userId) => {
         return new Promise((resolve, reject) => {
@@ -12,10 +11,9 @@ module.exports = {
                     })
                 }
                 resolve(result)
-
             })
         })
-    },//done
+    },
      getPortfolioById: (portfolioId) => {
         return new Promise((resolve, reject) => {
             db.query(`SELECT * FROM portfolio WHERE portfolioId='${portfolioId}'`, (error, result) => {
@@ -28,7 +26,7 @@ module.exports = {
                 resolve(result)
             })
         })
-    },//done
+    },
     addPortfolio: async (setData) => {
         return new Promise((resolve, reject) => {
             db.query(`INSERT INTO portfolio SET ?`, setData, (err) => {
@@ -44,7 +42,7 @@ module.exports = {
                   })
             })
         })
-    },//done 
+    },
     updatePortfolio: async (setData, portfolioId) => {
         return new Promise((resolve, reject) => {
             db.query(`UPDATE portfolio SET ? WHERE portfolioId = ?`, [setData, portfolioId], (err) => {
@@ -61,7 +59,7 @@ module.exports = {
                 })
             })
         })
-    },//done 
+    },
     deletePortfolio: async (portfolioId) => {
         return new Promise((resolve, reject) => {
             db.query(`DELETE FROM portfolio WHERE portfolioId = ?`, portfolioId, (err, results) => {
@@ -75,5 +73,5 @@ module.exports = {
                 resolve(results)
             })
         })
-    }//done 
+    }
 }
