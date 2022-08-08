@@ -1,7 +1,6 @@
 const fs= require('fs')
 const Portfolio = require('../models/portfolio')
 
-
 module.exports = {
     getPortfolioByUserId: async (req, res) => {
         try {
@@ -11,7 +10,6 @@ module.exports = {
             return res.status(400).json({ success: false, message: `Error: Portfolio Empty`, data: [] })
           }
           return res.status(200).json({ success: true, message: "Success show PortfolioByUserId", data: results })
-    
         } catch (error) {
           return res.status(400).json({ success: false, message: `Error: ${error.message}`, data: [] })
         }
@@ -24,7 +22,6 @@ module.exports = {
             return res.status(400).json({ success: false, message: `Error: Portfolio Empty`, data: [] })
           }
           return res.status(200).json({ success: true, message: "Success show portfolioId", data: results })
-    
         } catch (error) {
           return res.status(400).json({ success: false, message: `Error: ${error.message}`, data: [] })
         }
@@ -40,7 +37,6 @@ module.exports = {
           const setData = { userId,  portfolioName, portfolioRepo, portfolioImage }
           const results = await Portfolio.addPortfolio(setData)
           return res.status(200).json({ success: true, message: "Success create portfolio", data: results })
-    
         } catch (error) {
           return res.status(400).json({ success: false, message: `Error: ${error.code}`, data: [] })
         }

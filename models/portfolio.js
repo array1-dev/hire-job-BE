@@ -11,7 +11,6 @@ module.exports = {
                     })
                 }
                 resolve(result)
-
             })
         })
     },
