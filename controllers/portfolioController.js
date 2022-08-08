@@ -1,13 +1,11 @@
 const fs= require('fs')
-// const Slug = require('slugify');
-const Portfolio = require('../models/portfolio');
+const Portfolio = require('../models/portfolio')
 
 
 module.exports = {
     getPortfolioByUserId: async (req, res) => {
         try {
           const userId = req.decodeToken.userId
-          // console.log(req.decodeToken,"test user id")
           const results = await Portfolio.getPortfolioByUserId(userId)
           if (!results) {
             return res.status(400).json({ success: false, message: `Error: Portfolio Empty`, data: [] })
@@ -17,11 +15,10 @@ module.exports = {
         } catch (error) {
           return res.status(400).json({ success: false, message: `Error: ${error.message}`, data: [] })
         }
-      },//done
+      },
       getPortfolioById: async (req, res) => {
         try {
           const { portfolioId } = req.params
-          console.log(req.params,"test portfolio id")
           const results = await Portfolio.getPortfolioById(portfolioId)
           if (!results) {
             return res.status(400).json({ success: false, message: `Error: Portfolio Empty`, data: [] })
@@ -31,11 +28,10 @@ module.exports = {
         } catch (error) {
           return res.status(400).json({ success: false, message: `Error: ${error.message}`, data: [] })
         }
-      },//done 
+      },
     addPortfolio: async (req, res) => { 
         try {
           let { userId,  portfolioName, portfolioRepo, portfolioImage } = req.body
-          // console.log(req.body,'data add')
           portfolioImage = req.file ? req.file.filename : ''
           userId =  req.decodeToken.userId
           if (!portfolioName || !portfolioRepo || !portfolioImage) {
@@ -48,7 +44,7 @@ module.exports = {
         } catch (error) {
           return res.status(400).json({ success: false, message: `Error: ${error.code}`, data: [] })
         }
-      },//done 
+      },
     updatePortfolio: async (req, res) => {
         try {
             const {portfolioId} = req.params;
@@ -65,7 +61,6 @@ module.exports = {
               }) 
             }
             let { portfolioName, portfolioRepo,portfolioImage } = req.body;
-            // console.log(req.body, 'kosongg whyyyyyyyyy')
             portfolioImage = req.file ? req.file.filename : checkData[0].portfolioImage;
             if (!portfolioName && !portfolioRepo && portfolioImage === newsCheck[0].portfolioImage) {
               return res.status(400).json({ success: false, message: `Error: Nothing updated`, data: [] })
@@ -85,7 +80,7 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ success: false, message: `Error: ${error.code}` });
         }
-    },//done 
+    }, 
     deletePortfolio: async (req, res) => {
         try {
             const { portfolioId } = req.params;
@@ -108,7 +103,6 @@ module.exports = {
             const result = await Portfolio.deletePortfolio(portfolioId);
             return res.status(200).json({ success: true, message: 'Success delete!', data: result });
         } catch (error) {
-          // console.log(error,'testt')
             return res.status(500).json({ success: false, message: `Error: ${error.code}` });
         }
     }
