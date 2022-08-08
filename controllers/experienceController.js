@@ -18,7 +18,7 @@ module.exports = {
     },
     getExperienceById: async (req, res) => {
         try {
-            const experienceId = req.params.experienceId;
+            const { experienceId } = req.params;
             const result = await Experiences.getExperienceById(experienceId);
             if (!result.length) {
                 return res.status(404).json({
@@ -49,7 +49,7 @@ module.exports = {
     },
     updateExperience: async (req, res) => {
         try {
-            const {experienceId} = req.params;
+            const { experienceId } = req.params;
             const userId = req.decodeToken.userId
             const checkData = await Experiences.getExperienceById(experienceId);
             if(req.body.userId){
@@ -78,7 +78,7 @@ module.exports = {
     },
     removeExperience: async (req, res) => {
         try {
-            const experienceId = req.params.experienceId;
+            const { experienceId } = req.params;
             const checkData = await Experiences.getExperienceById(experienceId);
             if (checkData[0].userId !== req.decodeToken.userId) {
                 return res.status(500).json({
