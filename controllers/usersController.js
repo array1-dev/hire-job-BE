@@ -1,4 +1,4 @@
-const users = require('../models/users')
+const Users = require('../models/users')
 const notification = require('../models/notifikation')
 const fs = require('fs')
 const { isReadable } = require('stream')
@@ -23,14 +23,14 @@ module.exports = {
             return res.status(200).json({ success: true, message: "success show all users", data: { totalAllData, totalRows, totalPage, results } })
 
         } catch (err) {
-            // console.log(err)
+            console.log(err)
             return res.status(500).json({ success: false, message: `Error: Something went wrong!` })
         }
     },
     getBySlug: async (req, res) => {
         try {
             let userSlug = req.params.userSlug
-            const results = await users.getUserBySlug(userSlug)
+            const results = await Users.getUserBySlug(userSlug)
             if (!results.length) {
                 return res.status(404).json({
                     success: false, message: `Error: Data by ${userSlug} not found!`, data: []
@@ -45,7 +45,7 @@ module.exports = {
     getUserId: async (req, res) => {
         try {
             const userId = req.decodeToken.userId
-            const result = await users.getUserByid(userId)
+            const result = await Users.getUserByid(userId)
             if (!result.length) {
                 return res.status(404).json({
                     success: false, message: `Error: Data by ${userId} not found!`, data: []
@@ -67,8 +67,8 @@ module.exports = {
             const userId = req.decodeToken.userId
             let recepientEmail;
             let notifEmail;
-            const senderData = await users.getUserByid(userId)
-            const receiveData = await users.getDataUserBySlug(slug)
+            const senderData = await Users.getUserByid(userId)
+            const receiveData = await Users.getDataUserBySlug(slug)
             const companyName = await notification.getCompanyName(userId)
             console.log(companyName, 'ini company name')
             console.log(senderData, 'ini sender email')
@@ -102,7 +102,7 @@ module.exports = {
     getById: async (req, res) => {
         try {
             let userId = req.decodeToken.userId
-            const results = await users.getPekerjaById(userId)
+            const results = await Users.getPekerjaById(userId)
             // console.log(results ,'ini results')
             if (!results.length) {
                 return res.status(404).json({
@@ -125,7 +125,7 @@ module.exports = {
     updateUsers: async (req, res) => {
         try {
             const userId = req.decodeToken.userId;
-            const checkData = await users.getPekerjaById(userId)
+            const checkData = await Users.getPekerjaById(userId)
             if (!checkData.length) {
                 return res.status(404).json({
                     success: false, message: `Error: Data by ${userId} not found!`, data: []
@@ -161,7 +161,6 @@ module.exports = {
             console.log(err)
             return res.status(500).json({ success: false, message: `Error: Something went wrong!` });
         }
-
     },
 
 
