@@ -6,7 +6,7 @@ const { isReadable } = require('stream')
 module.exports = {
     getAllUsers: async (req, res) => {
         try {
-            let { search = 'java', sortSkill = '', limit, page } = req.query
+            let { search = '', sortSkill = '', limit, page } = req.query
             // console.log(limit)
             limit = Number(limit) || 100
             page = Number(page) || 1
@@ -23,7 +23,7 @@ module.exports = {
 
         } catch (err) {
             // console.log(err)
-            return res.status(500).json({ success: false, message: `Error: ${err.code}` })
+            return res.status(500).json({ success: false, message: `Error: Something went wrong!` })
         }
     },
     getBySlug: async (req, res) => {
@@ -38,16 +38,32 @@ module.exports = {
             return res.status(200).json({ success: true, message: `success data users ${userSlug}`, data: { results } })
         } catch (err) {
             console.log(err)
-            return res.status(500).json({ success: false, message: `Error: ${err.code}` })
+            return res.status(500).json({ success: false, message: `Error: Something went wrong!` })
         }
     },
-
-
+    getUserId: async(req,res)=>{
+        try {
+            const userId = req.decodeToken.userId
+            const result = await users.getUserByid(userId)
+            if(!result.length){
+                return res.status(404).json({
+                    success: false, message: `Error: Data by ${userId} not found!`, data: []
+                })
+            }
+            return res.status(200).json({
+                success: true,message: `Success get data!`,data:result
+            })
+        } catch (error) {
+            // console.log(error)
+            return res.status(500).json({ success: false, message: `Error: Something went wrong!` })
+        }
+    }
+    ,
     getById: async (req, res) => {
         try {
                 let userId = req.decodeToken.userId
                 const results = await users.getPekerjaById(userId)
-                console.log(results ,'ini results')
+                // console.log(results ,'ini results')
                 if (!results.length) {
                     return res.status(404).json({
                         success: false, message: `Error: Data by ${userId} not found!`, data: []
@@ -60,7 +76,7 @@ module.exports = {
                 }
                 return res.status(200).json({ success: true, message: 'Success get data', data: results })
         } catch (err) {
-            return res.status(500).json({ success: false, message: `Error: ${err.code}` })
+            return res.status(500).json({ success: false, message: `Error: Something went wrong!` })
         }
     },
 
@@ -103,7 +119,7 @@ module.exports = {
             
         } catch (err) {
             console.log(err)
-            return res.status(500).json({ success: false, message: `Error: ${err.code}` });
+            return res.status(500).json({ success: false, message: `Error: Something went wrong!` });
         }
 
     },

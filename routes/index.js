@@ -2,7 +2,6 @@ const express = require("express");
 const app = express()
 const authRoute = require('./authRoute')
 const usersRoute = require('./usersRoute')
-const { isPekerja, isPerekru, isLogin } = require('../helpers/auth')
 const { isPekerja, isPerekrut, isLogin } = require('../helpers/auth')
 const portfolioRoute = require('./portfolioRoute')
 const experienceRoute = require('./experienceRoute')
