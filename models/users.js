@@ -30,7 +30,7 @@ module.exports = {
     getUserBySlug: (userSlug) => {
         return new Promise((resolve, reject) => {
             // console.log(userSlug, 'ini slug dari model')   
-            const sql = `SELECT users.userSlug, users.email, users.categories, users.userPhone,users.userFullName, users.jobdesk, users.address, users.userImage, users.userDescription, GROUP_CONCAT(skills.skillName) AS skiils from users JOIN skills ON users.userId = skills.userId  WHERE users.userSlug = '${userSlug}' GROUP BY users.userId`
+            const sql = `SELECT users.userSlug, users.email, users.categories, users.userPhone,users.userFullName, users.jobdesk, users.address, users.userImage, users.userDescription,users.instagram, users.github, users.gitlab,   GROUP_CONCAT(skills.skillName) AS skiils from users JOIN skills ON users.userId = skills.userId  WHERE users.userSlug = '${userSlug}' GROUP BY users.userId`
             db.query(sql, (err, results) => {
                 // console.log(results, 'ini result')
                 if (err) {
