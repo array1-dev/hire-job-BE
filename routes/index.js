@@ -7,6 +7,7 @@ const portfolioRoute = require('./portfolioRoute')
 const experienceRoute = require('./experienceRoute')
 const companyRoute = require('./companyRoute')
 const skillRoute = require ('./skillRoute')
+const chatRoute = require ('./chatRoute')
 const notificationRoute = require('./notificationRoute')
 
 app.use('/auth', authRoute)
@@ -16,6 +17,7 @@ app.use('/auth', authRoute)
 app.use('/portfolio', portfolioRoute)
 app.use('/companies', companyRoute)
 app.use('/skills',isLogin,skillRoute )
+app.use('/chat', chatRoute)
 app.use('/notification', isLogin, notificationRoute)
 
 
