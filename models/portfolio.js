@@ -73,5 +73,17 @@ module.exports = {
                 resolve(results)
             })
         })
-    }
+    }, getPortfolioBySlug: (slug) => {
+        return new Promise((resolve, reject) => {
+            db.query(`SELECT * FROM portfolio WHERE userSlug='${slug}'`, (error, result) => {
+                if (error) {
+                    reject({
+                        success: false,
+                        message: error.sqlMessage,
+                    })
+                }
+                resolve(result)
+            })
+        })
+    },
 }

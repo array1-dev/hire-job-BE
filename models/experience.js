@@ -71,5 +71,17 @@ module.exports = {
                 resolve(results)
             })
         })
-    }
+    }, getExperienceBySlug: (slug) => {
+        return new Promise((resolve, reject) => {
+            db.query(`SELECT * FROM experiences WHERE userSlug='${slug}'`, (error, result) => {
+                if (error) {
+                    reject({
+                        success: false,
+                        message: error.sqlMessage,
+                    })
+                }
+                resolve(result)
+            })
+        })
+    },
 }
