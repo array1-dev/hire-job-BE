@@ -148,7 +148,7 @@ module.exports = {
             const results = await Users.update(userId, setData);
             if (req.file) {
                 if (checkData[0].userImage != '') {
-                    fs.unlink(`./upload/${checkData[0].userImage}`, function (err) {
+                    fs.unlink(`./uploads/${checkData[0].userImage}`, function (err) {
                         if (err) {
                             console.log(err)
                         }
