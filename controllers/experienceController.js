@@ -52,7 +52,7 @@ module.exports = {
             const { experienceId } = req.params;
             const userId = req.decodeToken.userId
             const checkData = await Experiences.getExperienceById(experienceId);
-            if(req.body.userId){
+            if (req.body.userId) {
                 return res.status(500).json({
                     success: false, message: `Error: Cannot transfer data. Keep it to yourself!`, data: []
                 })
@@ -62,7 +62,7 @@ module.exports = {
                     success: false, message: `Error: Data by ${experienceId} not found!`, data: []
                 })
             }
-            if(checkData[0].userId !== userId){
+            if (checkData[0].userId !== userId) {
                 return res.status(500).json({
                     success: false, message: `Error: Cant edit!`, data: []
                 })
@@ -95,6 +95,20 @@ module.exports = {
         } catch (err) {
             return res.status(500).json({ success: false, message: `Error: ${err.code}` });
         }
-    }
-    
+    },
+    getExperienceBySlug: async (req, res) => {
+        try {
+            const { userSlug } = req.params
+            console.log(userSlug)
+            const results = await Experiences.getExperienceBySlug(userSlug)
+            if (!results) {
+                return res.status(400).json({ success: false, message: `Error: Portfolio Empty`, data: [] })
+            }
+            return res.status(200).json({ success: true, message: "Success show portfolioId", data: results })
+        } catch (error) {
+            console.log(error)
+            return res.status(400).json({ success: false, message: `Error: ${error.message}`, data: [] })
+        }
+    },
+
 }

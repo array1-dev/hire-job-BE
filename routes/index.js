@@ -11,7 +11,7 @@ const chatRoute = require ('./chatRoute')
 const notificationRoute = require('./notificationRoute')
 
 app.use('/auth', authRoute)
-app.use('/experiences', isLogin, experienceRoute)
+app.use('/experiences', experienceRoute)
 app.use('/users', usersRoute)
 app.use('/auth', authRoute)
 app.use('/portfolio', portfolioRoute)
