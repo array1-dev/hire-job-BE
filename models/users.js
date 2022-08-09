@@ -30,7 +30,7 @@ module.exports = {
     getUserBySlug : (userSlug) =>{
         return new Promise ((resolve,reject) =>{
             // console.log(userSlug, 'ini slug dari model')   
-            const sql = `SELECT users.userSlug, users.userPhone,users.userFullName, users.jobdesk, users.address, users.userImage, users.userDescription, GROUP_CONCAT(skills.skillName) AS skiils from users JOIN skills ON users.userId = skills.userId  WHERE users.userSlug = '${userSlug}' GROUP BY users.userId`
+            const sql = `SELECT users.userSlug, users.email, users.userPhone,users.userFullName, users.jobdesk, users.address, users.userImage, users.userDescription, GROUP_CONCAT(skills.skillName) AS skiils from users JOIN skills ON users.userId = skills.userId  WHERE users.userSlug = '${userSlug}' GROUP BY users.userId`
             db.query(sql,(err,results) =>{
                 // console.log(results, 'ini result')
                 if(err){
@@ -76,7 +76,6 @@ module.exports = {
     },
     update: async(userId, data) =>{
         return new Promise((resolve, reject) =>{
-            // console.log(data, 'ini data oyyy') 
             db.query(`UPDATE users SET  ? WHERE userId = ? `, [data, userId], (err,results) =>{
                 if(err) reject(err)
                 resolve({
@@ -104,5 +103,15 @@ module.exports = {
                 resolve(results[0].total)
             })
         })
+    },
+    getDataUserBySlug : (slug) =>{
+        return new Promise((resolve, reject) =>{
+            db.query(`SELECT userId,email, userFullName FROM users WHERE userSlug= '${slug}'`, (err,results) =>{
+                if(err) reject(err)
+                resolve(results)
+            })
+        })
+
     }
-}
+    
+}  

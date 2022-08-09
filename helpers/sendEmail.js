@@ -32,7 +32,7 @@ module.exports = {
     },
     forgotPass: (email, code) => {
         return new Promise((resolve, reject) => {
-            const url = `${process.env.LINK_VERIFY}/change-password?email=${email}&code=${code}`
+            const url = `${process.env.LINK_VERIFY}/auth/ubah?email=${email}&code=${code}`
             axios({
                 method: 'POST',
                 url: 'https://api.sendinblue.com/v3/smtp/email',
@@ -52,6 +52,33 @@ module.exports = {
                     ],
                     "subject": "Reset your password!",
                     "htmlContent": `Click link to reset your password:<a href="${url}">here!</a>`
+                })
+            })
+                .then(result => resolve(true))
+                .catch(err => reject(false))
+        })
+    },
+    SendbyHire: (recepientEmail, message,subject) => {
+        return new Promise((resolve, reject) => {
+            axios({
+                method: 'POST',
+                url: 'https://api.sendinblue.com/v3/smtp/email',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json',
+                    'api-key': process.env.API_KEY_SENDINBLUE
+                },
+                data: JSON.stringify({
+                    "sender": {
+                        "email": `${process.env.EMAIL_SENDER}`,
+                    },
+                    "to": [
+                        {
+                            "email": `${recepientEmail}`,
+                        }
+                    ],
+                    "subject": subject,
+                    "htmlContent": message
                 })
             })
                 .then(result => resolve(true))
