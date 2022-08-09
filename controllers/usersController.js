@@ -7,15 +7,16 @@ const sendEmail = require('../helpers/sendEmail')
 module.exports = {
     getAllUsers: async (req, res) => {
         try {
-            let { search = '', sort = '', limit, page } = req.query
+            let { search = '', sort = '', limit, page, isActive } = req.query
             // console.log(limit)
+
             limit = Number(limit) || 100
             page = Number(page) || 1
             const offset = (page - 1) * limit
             // console.log(offset)
             let totalAllData = await Users.countAllUser()
             const totalPage = Math.ceil(totalAllData / limit)
-            const results = await Users.getAllUsers(search, sort, limit, offset)
+            const results = await Users.getAllUsers(search, sort, limit, offset, isActive)
             const totalRows = results.length
             if (page > totalPage) {
                 return res.status(400).json({ success: false, message: 'Error: Page not found', data: [] })
