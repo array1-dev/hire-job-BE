@@ -5,13 +5,15 @@ const usersRoute = require('./usersRoute')
 const { isPekerja, isPerekrut, isLogin } = require('../helpers/auth')
 const portfolioRoute = require('./portfolioRoute')
 const experienceRoute = require('./experienceRoute')
+const companyRoute = require('./companyRoute')
 const skillRoute = require ('./skillRoute')
 
 app.use('/auth', authRoute)
+app.use('/experiences', isLogin, experienceRoute)
 app.use('/users', usersRoute)
 app.use('/auth', authRoute)
 app.use('/portfolio', portfolioRoute)
-app.use('/experiences',isLogin, experienceRoute)
+app.use('/companies', companyRoute)
 app.use('/skills',isLogin,skillRoute )
 
 

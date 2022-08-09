@@ -1,9 +1,9 @@
 const db = require('../helpers/db')
 
 module.exports = {
-    getByIdUser: (userId) => {
+    getUserId: (userId) => {
         return new Promise((resolve, reject) => {
-            db.query(`SELECT * FROM experiences WHERE userId='${userId}'`, (error, result) => {
+            db.query(`SELECT * FROM companies WHERE userId='${userId}'`, (error, result) => {
                 if (error) {
                     reject({
                         success: false,
@@ -14,9 +14,9 @@ module.exports = {
             })
         })
     },
-    getExperienceById: (experienceId) => {
+    getCompanyId: (companyId) => {
         return new Promise((resolve, reject) => {
-            db.query(`SELECT * FROM experiences WHERE experienceId='${experienceId}'`, (error, result) => {
+            db.query(`SELECT * FROM companies WHERE companyId='${companyId}'`, (error, result) => {
                 if (error) {
                     reject({
                         success: false,
@@ -27,23 +27,36 @@ module.exports = {
             })
         })
     },
-    addExperience: (req, res) => {
+    getCompanybySlug: (companySlug) => {
         return new Promise((resolve, reject) => {
-            db.query(`INSERT INTO experiences SET ?`, req, (err, results) => {
+            db.query(`SELECT users.userImage, companies.companyName, companies.companyField, companies.companyAddress, companies.companyDescription, companies.companyEmail, companies.companyInstagram, companies.companyPhone, companies.companyPhone, companies.companyLinkedin FROM users JOIN companies ON users.userId = companies.userId where companySlug='${companySlug}'`, (error, result) => {
+                if (error) {
+                    reject({
+                        success: false,
+                        message: error.sqlMessage,
+                    })
+                }
+                resolve(result)
+            })
+        })
+    },
+    addCompany: (req, res) => {
+        return new Promise((resolve, reject) => {
+            db.query(`INSERT INTO companies SET ?`, req, (err, results) => {
               if (err) {
                 reject({ message: "something is wrong here" })
               }
               resolve({
-                message: "add experiences success",
+                message: "add company success",
                 status: 200,
                 data: results
               })
             })
         })
     },
-    updateExperience: async (experienceId, data) => {
+    updateCompany: async (companyId, data) => {
         return new Promise((resolve, reject) => {
-            db.query(`UPDATE experiences SET ? WHERE experienceId = ?`, [data, experienceId], (err, results) => {
+            db.query(`UPDATE companies SET ? WHERE companyId = ?`, [data, companyId], (err, results) => {
                 if (err) {
                     reject({
                         success: false, message: err.sqlMessage, data: {
@@ -52,15 +65,15 @@ module.exports = {
                     })
                 }
                 resolve({
-                    experienceId,
+                    companyId,
                     ...data,
                 })
             })
         })
     },
-    removeExperience: async (experienceId) => {
+    removeCompany: async (companyId) => {
         return new Promise((resolve, reject) => {
-            db.query(`DELETE FROM experiences WHERE experienceId = ?`, experienceId, (err, results) => {
+            db.query(`DELETE FROM companies WHERE companyId = ?`, companyId, (err, results) => {
                 if (err) {
                     reject({
                         success:false, message: err.sqlMessage, data: {
