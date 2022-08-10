@@ -1,6 +1,6 @@
 const fs= require('fs')
 const Portfolio = require('../models/portfolio')
-
+const Users = require('../models/users')
 module.exports = {
     getPortfolioByUserId: async (req, res) => {
         try {
@@ -41,13 +41,15 @@ module.exports = {
       },
     addPortfolio: async (req, res) => { 
         try {
-          let { userId,  portfolioName, portfolioRepo, portfolioImage } = req.body
+          let {portfolioName, portfolioRepo, portfolioImage } = req.body
           portfolioImage = req.file ? req.file.filename : ''
           userId =  req.decodeToken.userId
+          const getSlug = await Users.getSlugUserById(userId)
+          console.log(getSlug)
           if (!portfolioName || !portfolioRepo || !portfolioImage) {
             return res.status(400).json({ success: false, message: `Error: Please input portfolio`, data: [] })
           }
-          const setData = { userId,  portfolioName, portfolioRepo, portfolioImage }
+          const setData = { userId, userSlug : getSlug[0].userSlug  ,portfolioName, portfolioRepo, portfolioImage }
           const results = await Portfolio.addPortfolio(setData)
           return res.status(200).json({ success: true, message: "Success create portfolio", data: results })
         } catch (error) {

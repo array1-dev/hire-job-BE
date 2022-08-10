@@ -1,4 +1,5 @@
 const Experiences = require('../models/experience');
+const Users = require('../models/users')
 // const Slug = require('slugify');
 
 module.exports = {
@@ -33,13 +34,15 @@ module.exports = {
     addExperience: async (req, res) => {
         try {
             const userId = req.decodeToken.userId;
+            const userSlug = await Users.getSlugUserById(userId);
             let { experienceName, experiencePlace, experienceIn, experienceOut, experienceDescription } = req.body
             if (!experienceName || !experiencePlace || !experienceIn || !experienceOut || !experienceDescription) {
                 return res.status(404).json({ success: false, message: `Error: Data cannot be empty. Please fill in.` })
             }
             let setData = {
                 ...req.body,
-                userId
+                userId,
+                userSlug : userSlug[0].userSlug
             }
             const result = await Experiences.addExperience(setData);
             return res.status(200).json({ success: true, message: 'Your experience data has been added.', data: result });

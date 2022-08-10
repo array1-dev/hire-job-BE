@@ -49,7 +49,7 @@ module.exports = {
     },
     getAllUsers: (search, sort, limit, offset, isActive) => {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT users.userSlug,users.userFullName,users.categories, users.jobdesk, users.address, users.userImage, users.categories, users.isActive, GROUP_CONCAT(skills.skillName) AS skills from users LEFT JOIN skills ON users.userId = skills.userId  ${search ? `WHERE skills.skillname LIKE '%${search}%' AND users.isActive = '${isActive}' OR users.userFullName LIKE '%${search}%' AND users.isActive = '${isActive}' OR users.address LIKE '%${search}%'  AND users.isActive = '${isActive}' ` :  ''}  ${sort === 'part time' ? `WHERE users.categories = 'part time'AND users.isActive = '${isActive}' GROUP BY users.userId ` : sort === 'fulltime' ? `WHERE users.categories = 'fulltime' AND users.isActive = '${isActive}' GROUP BY users.userId` :sort === 'freelance' ? `WHERE users.categories = 'freelance' AND users.isActive = '${isActive}' GROUP BY users.userId` : sort === 'skill' ? `WHERE skills.skillname != 'null' AND users.isActive = '${isActive}' GROUP BY users.userId ` : 'GROUP BY users.userId'}   ${limit ? `LIMIT ${limit} OFFSET ${offset}` : ''} `
+            const sql = `SELECT users.userSlug,users.userFullName,users.categories, users.jobdesk, users.address, users.userImage, users.categories, users.isActive, GROUP_CONCAT(skills.skillName) AS skills from users LEFT JOIN skills ON users.userId = skills.userId  ${search ? `WHERE skills.skillname LIKE '%${search}%' AND users.isActive = '${isActive}' OR users.userFullName LIKE '%${search}%' AND users.isActive = '${isActive}' OR users.address LIKE '%${search}%'  AND users.isActive = '${isActive}' ` :  ` WHERE users.isActive = '${isActive}'`}  ${sort === 'part time' ? `WHERE users.categories = 'part time'AND users.isActive = '${isActive}' GROUP BY users.userId ` : sort === 'fulltime' ? `WHERE users.categories = 'fulltime' AND users.isActive = '${isActive}' GROUP BY users.userId` :sort === 'freelance' ? `WHERE users.categories = 'freelance' AND users.isActive = '${isActive}' GROUP BY users.userId` : sort === 'skill' ? `WHERE skills.skillname != 'null' AND users.isActive = '${isActive}' GROUP BY users.userId ` : 'GROUP BY users.userId'}   ${limit ? `LIMIT ${limit} OFFSET ${offset}` : ''} `
             // console.log(sql)
             db.query(sql, (err, result) => {
                 if (err) {
@@ -99,8 +99,7 @@ module.exports = {
                 resolve(res)
             })
         })
-    }
-    ,
+    },
 
 
     countAllUser: () => {
@@ -119,6 +118,14 @@ module.exports = {
             })
         })
 
-    }
+    },    
+    getSlugUserById: (userId) => {
+        return new Promise((resolve, reject) => {
+            db.query(`SELECT userSlug FROM users WHERE userId= ?`, userId, (err, res) => {
+                if (err) reject(err)
+                resolve(res)
+            })
+        })
+    },
 
 }  
