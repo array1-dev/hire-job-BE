@@ -1,3 +1,4 @@
+const { Console } = require("winston/lib/winston/transports")
 const { off } = require("../helpers/db")
 const db = require("../helpers/db")
 
@@ -13,6 +14,7 @@ module.exports = {
                 resolve(results)
             })
         })
+        
     },
     getPerekrutById: (userId) => {
         return new Promise((resolve, reject) => {
@@ -99,11 +101,14 @@ module.exports = {
     },
 
 
-    countAllUser: () => {
+    countAllUser: (search, sort, isActive) => {
         return new Promise((resolve, reject) => {
-            db.query(`SELECT COUNT(userId) AS total FROM users WHERE role ='pekerja' AND isActive ='y' `, (err, results) => {
+            console.log(sort)
+            sql=  `SELECT users.userId from users LEFT JOIN skills ON users.userId = skills.userId   ${search ? ` WHERE skills.skillname LIKE  '%${search}%' AND users.role = 'pekerja' OR users.userFullName LIKE '%${search}%' AND users.role = 'pekerja' `: `WHERE users.role = 'pekerja'`} ${isActive ? `AND users.isActive = '${isActive}'`:''}   ${sort === 'part time' ? `AND users.categories = 'part time'`: sort === 'fulltime' ? `AND users.categories = 'fulltime'` :sort === 'skills' ? `AND skills.skillName != 'null'`: '' }  GROUP BY users.userId `
+            db.query(sql, (err, results) => {
+               
                 if (err) reject(err)
-                resolve(results[0].total)
+                resolve(results.length)
             })
         })
     },
