@@ -68,9 +68,6 @@ module.exports = {
             const senderData = await Users.getUserByid(userId)
             const receiveData = await Users.getDataUserBySlug(slug)
             const companyName = await notification.getCompanyName(userId)
-            console.log(companyName, 'ini company name')
-            console.log(senderData, 'ini sender email')
-            console.log(receiveData, 'ini receive data')
             if (!receiveData.length) {
                 return res.status(404).json({
                     success: false, message: `Error: Data by ${userId} not found!`, data: []

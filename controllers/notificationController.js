@@ -9,19 +9,14 @@ module.exports = {
         try {
             let userId = req.decodeToken.userId
             const results = await notification.getAllNotifByrecipientId(userId)
-            console.log(results)
+            const unread = await notification.countNotifUnread(userId)
             if (!results.length) {
                 return res.status(404).json({
                     success: false, message: `Error: Data by ${userId} not found!`, data: []
                 })
             }
-            // if (req.decodeToken.userId !== results[) {
-            //     return res.status(404).json({
-            //         success: false, message: `Error: Sorry, access is not allowed!`, data: []
-            //     })
-            // }
-            console.log(results)
-            return res.status(200).json({ success: true, message: 'Success get data', data: results })
+          
+            return res.status(200).json({ success: true, message: 'Success get data', data: results, unread })
         } catch (err) {
             console.log(err)
             return res.status(500).json({ success: false, message: `Error: Something went wrong!` })
