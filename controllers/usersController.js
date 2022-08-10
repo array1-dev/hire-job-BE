@@ -1,9 +1,8 @@
 const Users = require('../models/users')
 const notification = require('../models/notifikation')
 const fs = require('fs')
-const { isReadable } = require('stream')
 const { SendbyHire } = require('../helpers/sendEmail')
-const sendEmail = require('../helpers/sendEmail')
+
 module.exports = {
     getAllUsers: async (req, res) => {
         try {
