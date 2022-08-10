@@ -8,12 +8,9 @@ module.exports = {
     getAllUsers: async (req, res) => {
         try {
             let { search = '', sort = '', limit, page, isActive } = req.query
-            console.log(sort)
-
             limit = Number(limit) || 100
             page = Number(page) || 1
             const offset = (page - 1) * limit
-            // console.log(offset)
             let totalAllData = await Users.countAllUser()
             const totalPage = Math.ceil(totalAllData / limit)
             const results = await Users.getAllUsers(search, sort, limit, offset, isActive)
@@ -71,9 +68,6 @@ module.exports = {
             const senderData = await Users.getUserByid(userId)
             const receiveData = await Users.getDataUserBySlug(slug)
             const companyName = await notification.getCompanyName(userId)
-            console.log(companyName, 'ini company name')
-            console.log(senderData, 'ini sender email')
-            console.log(receiveData, 'ini receive data')
             if (!receiveData.length) {
                 return res.status(404).json({
                     success: false, message: `Error: Data by ${userId} not found!`, data: []
@@ -81,7 +75,7 @@ module.exports = {
             }
             recepientEmail = receiveData[0].email
 
-            const sendEmail = await SendbyHire(recepientEmail, subject, message)
+            const sendEmail = await SendbyHire(recepientEmail, message, subject)
             
 
             if(sendEmail === true){

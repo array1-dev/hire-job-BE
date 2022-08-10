@@ -56,6 +56,14 @@ module.exports = {
             })
         })
 
-    }
+    },
+    countNotifUnread: (userId) => {
+        return new Promise((resolve, reject) => {
+            db.query(`SELECT COUNT(notification_id) AS total FROM notification WHERE recipientId = ${userId} AND isRead = 'n' `, (err, results) => {
+                if (err) reject(err)
+                resolve(results[0].total)
+            })
+        })
+    },
 
 }
