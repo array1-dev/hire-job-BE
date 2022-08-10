@@ -49,16 +49,15 @@ module.exports = {
     },
     getAllUsers: (search, sort, limit, offset, isActive) => {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT users.userSlug,users.userFullName,users.categories, users.jobdesk, users.address, users.userImage, users.categories, users.isActive, GROUP_CONCAT(skills.skillName) AS skills from users LEFT JOIN skills ON users.userId = skills.userId  ${search ? `WHERE skills.skillname LIKE '%${search}%' AND users.isActive = '${isActive}' OR users.userFullName LIKE '%${search}%' AND users.isActive = '${isActive}' OR users.address LIKE '%${search}%'  AND users.isActive = '${isActive}' ` : `${isActive ? `WHERE users.isActive = '${isActive}'`: ''  } ` }  ${sort === 'part time' ? `WHERE users.categories = 'part time'AND users.isActive = '${isActive}' GROUP BY users.userId ` : sort === 'fulltime' ? `WHERE users.categories = 'fulltime' AND users.isActive = '${isActive}' GROUP BY users.userId` :sort === 'freelance' ? `WHERE users.categories = 'freelance' AND users.isActive = '${isActive}' GROUP BY users.userId` : sort === 'skill' ? `WHERE skills.skillname != 'null' AND users.isActive = '${isActive}' GROUP BY users.userId ` : 'GROUP BY users.userId'}   ${limit ? `LIMIT ${limit} OFFSET ${offset}` : ''} `
-            // console.log(sql)
+            const sql = `SELECT users.userSlug, users.userFullName, users.jobdesk, users.address, users.userImage, users.categories, users.isActive, GROUP_CONCAT(skills.skillName) AS skills from users LEFT JOIN skills ON users.userId = skills.userId   ${search ? ` WHERE skills.skillname LIKE  '%${search}%' AND users.role = 'pekerja' OR users.userFullName LIKE '%${search}%' AND users.role = 'pekerja' `: `WHERE users.role = 'pekerja'`} ${isActive ? `AND users.isActive = '${isActive}'`:''}   ${sort === 'part time' ? `WHERE users.categories = 'part time'`: sort === 'fulltime' ? `AND WHERE users.categories = 'fulltime'` :sort === 'skills' ? `AND skills.skillName != 'null'`: '' }  GROUP BY users.userId  ${limit ? `LIMIT ${limit} OFFSET ${offset}` : ''} `
             db.query(sql, (err, result) => {
                 if (err) {
-                    // console.log(err, 'ini error result')
+                    console.log(err, 'ini error result')
                 }
-                console.log(result)
                 if (!result.length) {
                     resolve([])
                 }
+                
                 else {
 
                     result.map((item, index) => {
@@ -69,8 +68,6 @@ module.exports = {
                             hasil = null
                         }
                         result[index].skills = hasil
-
-                        // console.log(result[index].skills)
                         resolve(
                             result,
                             result[index].skills = hasil
@@ -104,7 +101,7 @@ module.exports = {
 
     countAllUser: () => {
         return new Promise((resolve, reject) => {
-            db.query('SELECT COUNT(userId) AS total FROM users', (err, results) => {
+            db.query(`SELECT COUNT(userId) AS total FROM users WHERE role ='pekerja' AND isActive ='y' `, (err, results) => {
                 if (err) reject(err)
                 resolve(results[0].total)
             })
