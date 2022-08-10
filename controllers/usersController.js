@@ -8,12 +8,9 @@ module.exports = {
     getAllUsers: async (req, res) => {
         try {
             let { search = '', sort = '', limit, page, isActive } = req.query
-            console.log(sort)
-
             limit = Number(limit) || 100
             page = Number(page) || 1
             const offset = (page - 1) * limit
-            // console.log(offset)
             let totalAllData = await Users.countAllUser()
             const totalPage = Math.ceil(totalAllData / limit)
             const results = await Users.getAllUsers(search, sort, limit, offset, isActive)
@@ -81,7 +78,7 @@ module.exports = {
             }
             recepientEmail = receiveData[0].email
 
-            const sendEmail = await SendbyHire(recepientEmail, subject, message)
+            const sendEmail = await SendbyHire(recepientEmail, message, subject)
             
 
             if(sendEmail === true){
