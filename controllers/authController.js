@@ -59,10 +59,12 @@ module.exports = {
                 }
             }
             if (type === 'perekrut') {
+				const userSlug = Slugify(`${userFullName} ${randomString(2)}`, { lower: true })
                 let { companyName, companyField } = req.body
                 const role = 'perekrut'
                 let setData = {
                     userFullName,
+					userSlug,
                     email,
                     password,
                     userPhone,
@@ -73,10 +75,12 @@ module.exports = {
                 if (sendemail) {
                     const result = await Auth.register(setData)
                     const checkId = await Auth.getUserByEmail(email)
+					const companySlug = Slugify(`${companyName} ${randomString(2)}`, { lower: true })
                     let setDataCompany = {
                         userId: checkId[0].userId,
                         companyPhone: userPhone,
                         companyName,
+						companySlug,
                         companyField,
                     }
                     if (!checkId.length) {
