@@ -8,7 +8,7 @@ module.exports = {
     getAllUsers: async (req, res) => {
         try {
             let { search = '', sort = '', limit, page, isActive } = req.query
-            // console.log(limit)
+            console.log(sort)
 
             limit = Number(limit) || 100
             page = Number(page) || 1
