@@ -11,14 +11,14 @@ module.exports = {
             limit = Number(limit) || 100
             page = Number(page) || 1
             const offset = (page - 1) * limit
-            let totalAllData = await Users.countAllUser()
+            let totalAllData = await Users.countAllUser(search, sort, isActive)
             const totalPage = Math.ceil(totalAllData / limit)
             const results = await Users.getAllUsers(search, sort, limit, offset, isActive)
             const totalRows = results.length
             if (page > totalPage) {
                 return res.status(400).json({ success: false, message: 'Error: Page not found', data: [] })
             }
-            return res.status(200).json({ success: true, message: "success show all users", data: { totalAllData, totalRows, totalPage, results } })
+            return res.status(200).json({ success: true, message: "success show all users", data: { totalAllData , totalRows, totalPage, results } })
 
         } catch (err) {
             console.log(err)
