@@ -91,7 +91,7 @@ module.exports = {
     },
     getUserByid: (userId) => {
         return new Promise((resolve, reject) => {
-            db.query(`SELECT userFullName,email,users.categories,userImage,role,isActive FROM users WHERE userId= ?`, userId, (err, res) => {
+            db.query(`SELECT userFullName,userSlug,email,users.categories,userImage,role,isActive FROM users WHERE userId= ?`, userId, (err, res) => {
                 if (err) reject(err)
                 resolve(res)
             })

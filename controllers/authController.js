@@ -160,7 +160,7 @@ module.exports = {
             const sendemail = await sendEmail.forgotPass(email, code)
             if (sendemail) {
                 await Auth.forgotPass(email, code)
-                return res.status(201).json({ success: true, message: 'Successfully sent forgot-password!, Please check your email !' })
+                return res.status(201).json({ success: true, message: 'Successfully sent reset-password!, Please check your email !' })
             }
             return res.status(200).json({ data: result })
         } catch (error) {
@@ -173,7 +173,7 @@ module.exports = {
             const checkEmail = await Auth.getUserByEmail(email)
             if (checkEmail.length < 1) {
                 return res.status(404).json({
-                    success: false, message: 'Error: User not found!'
+                    success: false, message: 'Error: Email not found!'
                 })
             }
             if (checkEmail[0].code != code) {
