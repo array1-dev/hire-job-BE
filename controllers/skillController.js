@@ -5,12 +5,13 @@ module.exports = {
         try {
             const userId = req.decodeToken.userId;
             const result = await Skill.getByIdUser(userId);
+            
             if (!result.length) {
                 return res.status(404).json({
                     success: false, message: `Error: Data by ${userId} not found!`, data: []
                 })
             }
-            return res.status(200).json({ success: true, message: 'Success', data: result[0] });
+            return res.status(200).json({ success: true, message: 'Success', data: result });
         } catch (error) {
             return res.status(500).json({ success: false, message: `Error: ${error.code}` });
         }
